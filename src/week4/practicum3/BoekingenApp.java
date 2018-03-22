@@ -39,13 +39,13 @@ public class BoekingenApp extends Application {
         aankomstdatumLabel.setPrefWidth(100);
         DatePicker aankomstdatumInput = new DatePicker();
         aankomstdatumInput.setPrefWidth(230);
-        aankomstdatumInput.setValue(tomorrow);
+        aankomstdatumInput.setValue(today);
 
         Label vertrekdatumLabel = new Label("Vertrekdatum:");
         vertrekdatumLabel.setPrefWidth(100);
         DatePicker vertrekdatumInput = new DatePicker();
         vertrekdatumInput.setPrefWidth(230);
-        vertrekdatumInput.setValue(today);
+        vertrekdatumInput.setValue(tomorrow);
 
         Label kamertypeLabel = new Label("Kamertype:");
         kamertypeLabel.setPrefWidth(100);
@@ -60,10 +60,28 @@ public class BoekingenApp extends Application {
         hbox.setAlignment(Pos.CENTER_RIGHT);
 
         Button resetButton = new Button("reset");
+        resetButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                naamInput.clear();
+                adresInput.clear();
+                aankomstdatumInput.setValue(today);
+                vertrekdatumInput.setValue(tomorrow);
+                kamertypeInput.setValue("");
+            }
+        });
         Button boekButton = new Button("boek");
         boekButton.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent event) {
-                hotel.voegBoekingToe(aankomstdatumInput.getValue(), vertrekdatumInput.getValue(), naamInput.getText(), adresInput.getText(), kamertypeInput.getValue());
+                KamerType geboekteKamer = null;
+                for (KamerType kamer : hotel.getKamerTypen()) {
+                    if(kamer.equals(kamertypeInput.getValue())) {
+                        geboekteKamer = kamer;
+                        break;
+                    }
+                }
+                hotel.voegBoekingToe(aankomstdatumInput.getValue(), vertrekdatumInput.getValue(), naamInput.getText(), adresInput.getText(), geboekteKamer);
+                hotel.toString();
             }
         });
 
